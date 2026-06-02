@@ -56,7 +56,7 @@
     <div id="rail-latest" class="overflow-x-auto scrollbar-hide scroll-smooth">
       <div class="flex gap-6 pb-4">
         {% for product in latest_products %}
-          {% include "partials/product_card.html" %}
+          <div class="flex-shrink-0 w-72 sm:w-80">{% include "partials/product_card.html" %}</div>
         {% endfor %}
       </div>
     </div>
@@ -77,7 +77,7 @@
     <div id="rail-best" class="overflow-x-auto scrollbar-hide scroll-smooth">
       <div class="flex gap-6 pb-4">
         {% for product in bestsellers %}
-          {% include "partials/product_card.html" %}
+          <div class="flex-shrink-0 w-72 sm:w-80">{% include "partials/product_card.html" %}</div>
         {% endfor %}
       </div>
     </div>

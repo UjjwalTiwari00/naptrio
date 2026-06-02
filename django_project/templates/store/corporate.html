@@ -1,10 +1,65 @@
 {% extends "base.html" %}
 {% block title %}Corporate Gifting — NAPTRIO{% endblock %}
 {% block content %}
-<section class="py-20 bg-white">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="font-clash text-5xl font-semibold mb-6">Corporate Gifting</h1>
-    <p class="text-gray-700 font-roboto">Customise Naptrio audio products for your team. Bulk pricing, co-branded packaging and dedicated account management.</p>
+
+<section class="bg-black text-white py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl">
+      <p class="text-[#4a9eff] font-clash text-sm tracking-[0.2em] uppercase mb-4">Bulk Orders · Co-branded Packaging</p>
+      <h1 class="font-clash text-5xl font-semibold mb-6">Corporate Gifting</h1>
+      <p class="text-gray-300 font-roboto text-lg leading-relaxed">
+        Customise Naptrio audio products for your team. Bulk pricing, co-branded packaging
+        and a dedicated account manager — all included.
+      </p>
+      <div class="flex flex-wrap gap-8 mt-10">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-[#0c5faa]/20 flex items-center justify-center">
+            <i data-lucide="package" class="w-5 h-5 text-[#4a9eff]"></i>
+          </div>
+          <span class="font-clash text-sm text-gray-300">Minimum 10 units</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-[#0c5faa]/20 flex items-center justify-center">
+            <i data-lucide="tag" class="w-5 h-5 text-[#4a9eff]"></i>
+          </div>
+          <span class="font-clash text-sm text-gray-300">Bulk discounts up to 30%</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-[#0c5faa]/20 flex items-center justify-center">
+            <i data-lucide="headphones" class="w-5 h-5 text-[#4a9eff]"></i>
+          </div>
+          <span class="font-clash text-sm text-gray-300">Co-branded packaging</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="font-clash text-3xl font-semibold mb-2">Choose Your Gift</h2>
+    <p class="text-gray-500 font-roboto mb-10">Pick any product — we handle bulk packaging and delivery.</p>
+    <div class="flex flex-wrap gap-8">
+      {% for product in products %}
+        <div class="w-full sm:w-[calc(50%-16px)] lg:w-[calc(25%-24px)]">
+          {% include "partials/product_card.html" %}
+        </div>
+      {% empty %}
+        <p class="text-gray-400 font-roboto">No products available at the moment.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-20 bg-[#fafafa]">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="font-clash text-3xl font-semibold mb-4">Get a Bulk Quote</h2>
+    <p class="text-gray-500 font-roboto mb-8">Fill in the form and our team will reach out within 24 hours.</p>
+    <a href="{% url 'store:contact' %}"
+       class="inline-block bg-[#0c5faa] hover:bg-[#094a85] text-white px-10 py-4 rounded-lg font-clash transition-colors">
+      Contact Us
+    </a>
+  </div>
+</section>
+
 {% endblock %}

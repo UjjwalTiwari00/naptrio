@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, EmailOTP, Product, Customer, Order, OrderItem, SiteSettings
+from .models import Cart, CartItem, Category, EmailOTP, Product, Customer, Order, OrderItem, SiteSettings
 
 
 @admin.register(Category)
@@ -74,6 +74,30 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         return not SiteSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class CartItemInline(admin.TabularInline):
+    model = CartItem
+    extra = 0
+    readonly_fields = ['product', 'quantity', 'subtotal']
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'guest_token_short', 'item_count', 'total', 'updated_at']
+    readonly_fields = ['user', 'guest_token', 'created_at', 'updated_at']
+    inlines = [CartItemInline]
+
+    def guest_token_short(self, obj):
+        return obj.guest_token[:8] if obj.guest_token else '—'
+    guest_token_short.short_description = 'Guest Token'
+
+    def item_count(self, obj):
+        return obj.count
+    item_count.short_description = 'Items'
+
+    def has_add_permission(self, request):
         return False
 
 

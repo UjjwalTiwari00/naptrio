@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}
+  {% if query %}Search results for "{{ query }}"{% else %}Search{% endif %} — NAPTRIO
+{% endblock %}
+
+{% block content %}
+<section class="bg-black text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {% if query %}
+      <h1 class="font-clash text-4xl font-semibold">
+        Results for <span class="text-[#0c5faa]">"{{ query }}"</span>
+      </h1>
+      <p class="text-gray-400 mt-2 font-roboto">
+        {{ products|length }} product{{ products|length|pluralize }} found
+      </p>
+    {% else %}
+      <h1 class="font-clash text-4xl font-semibold">Search Products</h1>
+      <p class="text-gray-400 mt-2 font-roboto">Enter a keyword to find products</p>
+    {% endif %}
+
+    <form action="{% url 'store:search' %}" method="get" class="mt-6 max-w-xl">
+      <div class="relative">
+        <input
+          type="text"
+          name="q"
+          value="{{ query }}"
+          placeholder="Search speakers, earbuds, headphones…"
+          autofocus
+          class="w-full px-4 py-3 pl-12 bg-gray-900 border border-gray-700 text-white
+                 placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2
+                 focus:ring-[#0c5faa] focus:border-transparent text-sm font-roboto"
+        />
+        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+        {% if query %}
+          <a href="{% url 'store:search' %}"
+             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+             aria-label="Clear search">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {% if query %}
+      {% if products %}
+        <div class="flex flex-wrap gap-8">
+          {% for product in products %}
+            <div class="w-full sm:w-[calc(50%-16px)] lg:w-[calc(25%-24px)]">
+              {% include "partials/product_card.html" %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-24">
+          <i data-lucide="search-x" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+          <h2 class="font-clash text-2xl font-semibold text-gray-800 mb-2">No results for "{{ query }}"</h2>
+          <p class="text-gray-500 font-roboto mb-8">Try a different keyword like "speaker", "earbuds", or "neckband".</p>
+          <div class="flex flex-wrap justify-center gap-3">
+            {% for c in nav_categories %}
+              <a href="{% url 'store:category' c.slug %}"
+                 class="px-4 py-2 border border-gray-300 rounded-full text-sm font-clash
+                        text-gray-700 hover:bg-[#0c5faa] hover:text-white hover:border-[#0c5faa] transition-colors">
+                {{ c.name }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="text-center py-24">
+        <i data-lucide="search" class="w-16 h-16 text-gray-200 mx-auto mb-4"></i>
+        <p class="text-gray-400 font-roboto">Start typing to search across all categories</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

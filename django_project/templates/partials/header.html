@@ -13,7 +13,7 @@
         <div class="flex items-center gap-5">
           <a href="{% url 'store:about' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">About</a>
           <a href="{% url 'store:contact' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Contact</a>
-          <a href="{% url 'store:corporate' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Corporate</a>
+          <a href="{% url 'store:corporate' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Corporate Gifting</a>
 
           {# ── Account ──────────────────────────────────────────── #}
           {% if user.is_authenticated %}
@@ -90,7 +90,7 @@
             </a>
           {% endfor %}
         </div>
-        <form action="#" class="flex-shrink-0 w-48 lg:w-80 ml-4 lg:ml-8 hidden md:block">
+        <form action="{% url 'store:search' %}" method="get" class="flex-shrink-0 w-48 lg:w-80 ml-4 lg:ml-8 hidden md:block">
           <div class="relative">
             <input type="text" name="q" placeholder="Search products"
                    class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent text-sm" />
@@ -105,10 +105,12 @@
 
   <div id="mobileMenu" class="lg:hidden hidden bg-black border-t border-gray-800">
     <div class="px-4 py-4 space-y-3">
-      <div class="relative">
-        <input type="text" placeholder="Search products" class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg" />
-        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-      </div>
+      <form action="{% url 'store:search' %}" method="get">
+        <div class="relative">
+          <input type="text" name="q" placeholder="Search products" class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg" />
+          <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+        </div>
+      </form>
       {% if user.is_authenticated %}
         <a href="{% url 'core:dashboard' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">My Account</a>
         <a href="{% url 'core:orders' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">My Orders</a>

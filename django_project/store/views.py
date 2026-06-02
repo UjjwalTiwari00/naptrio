@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import JsonResponse
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -165,6 +166,25 @@ def product_detail(request, product_id):
     return render(request, 'store/product_detail.html', ctx)
 
 
+def search(request):
+    query = (request.GET.get('q') or '').strip()
+    if query:
+        try:
+            products = Product.objects.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__name__icontains=query),
+                is_active=True,
+            ).select_related('category').distinct()
+        except Exception:
+            logger.exception("Failed to execute search for query: %s", query)
+            products = []
+    else:
+        products = []
+    ctx = _base_context(request, query=query, products=products)
+    return render(request, 'store/search.html', ctx)
+
+
 def about(request):
     return render(request, 'store/about.html', _base_context(request))
 
@@ -174,7 +194,13 @@ def contact(request):
 
 
 def corporate(request):
-    return render(request, 'store/corporate.html', _base_context(request))
+    try:
+        products = Product.objects.filter(is_active=True).select_related('category')
+    except Exception:
+        logger.exception("Failed to load products for corporate page")
+        products = []
+    ctx = _base_context(request, products=products)
+    return render(request, 'store/corporate.html', ctx)
 
 
 # ── Cart ──────────────────────────────────────────────────────────────────────

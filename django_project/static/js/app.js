@@ -1,6 +1,6 @@
 /* ============================================================
    Naptrio – page chrome (slideshow, rails, cart, subscribe)
-   Pure vanilla JS. Cart backed by server sessions via AJAX.
+   Pure vanilla JS. Cart backed by DB via AJAX.
    ============================================================ */
 (() => {
   "use strict";
@@ -74,15 +74,13 @@
     const mobile  = document.getElementById("mobileMenu");
     if (menuBtn && mobile) menuBtn.addEventListener("click", () => mobile.classList.toggle("hidden"));
 
-    /* delegated: add-to-cart (AJAX → server session) */
+    /* delegated: add-to-cart (AJAX) */
     document.addEventListener("click", async (e) => {
       const btn = e.target.closest("[data-add]");
       if (!btn) return;
 
       const productId = btn.dataset.add;
       const name      = btn.dataset.name || "Item";
-
-      // Find the cart-add URL embedded in the page or fall back to a convention
       const url = document.querySelector("meta[name='cart-add-url']")?.content || "/cart/add/";
 
       const fd = new FormData();

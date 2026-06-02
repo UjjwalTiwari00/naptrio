@@ -52,14 +52,14 @@ h1, h2, h3, h4, h5, .font-clash { font-family: var(--font-clash); }
 
 /* Tiny toast for "Added to cart" etc. */
 .toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: #111; color: #fff;
+  position: fixed; top: 80px; right: 24px;
+  background: #22c55e; color: #fff;
   padding: 12px 20px; border-radius: 8px;
   font-family: var(--font-clash); font-size: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.30);
-  opacity: 0; transform: translateY(20px); pointer-events: none;
+  box-shadow: 0 10px 25px rgba(34,197,94,.35);
+  opacity: 0; transform: translateY(-16px); pointer-events: none;
   transition: opacity 250ms ease, transform 250ms ease;
-  z-index: 100;
+  z-index: 9999;
 }
 .toast.show { opacity: 1; transform: translateY(0); }
 

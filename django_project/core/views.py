@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from store.cart import merge_guest_cart
 from store.email_utils import send_otp_email
 from store.models import Category, Customer, EmailOTP, Order
 
@@ -133,8 +134,10 @@ def verify_otp(request):
             user.customer.phone = pending['phone']
             user.customer.save()
 
+        guest_token = getattr(request, 'guest_token', None)
         request.session.pop('pending_signup', None)
         login(request, user)
+        merge_guest_cart(user, guest_token)
         messages.success(request, f"Welcome to NAPTRIO, {pending['first_name']}!")
         return redirect('core:dashboard')
 
@@ -181,7 +184,9 @@ def signin(request):
             user = None
 
         if user:
+            guest_token = getattr(request, 'guest_token', None)
             login(request, user)
+            merge_guest_cart(user, guest_token)
             next_url = request.GET.get('next') or 'core:dashboard'
             return redirect(next_url)
         else:

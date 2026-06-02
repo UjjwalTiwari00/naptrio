@@ -1,5 +1,5 @@
 {# Product card include. Pass `product` (Product model instance). #}
-<article class="flex-shrink-0 w-72 sm:w-80 product-card bg-white rounded-lg overflow-hidden cursor-pointer">
+<article class="product-card bg-white rounded-lg overflow-hidden cursor-pointer w-full">
   <a href="{% url 'store:product_detail' product.id %}" class="block">
     <div class="relative aspect-square bg-gray-100 overflow-hidden">
       {% if product.bestseller %}

@@ -31,6 +31,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "store.middleware.GuestTokenMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -129,7 +130,8 @@ LOGGING = {
 # --- Sessions ---------------------------------------------------------------
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 2 weeks
+SESSION_COOKIE_AGE = 60 * 30  # 30 minutes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 # --- CSRF -------------------------------------------------------------------
