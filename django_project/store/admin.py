@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Customer, Order, OrderItem, SiteSettings
+from .models import Category, EmailOTP, Product, Customer, Order, OrderItem, SiteSettings
 
 
 @admin.register(Category)
@@ -43,8 +43,49 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Notifications', {
+            'fields': ('admin_notification_email',),
+        }),
+        ('SMTP Configuration', {
+            'description': (
+                'These credentials are used for all outgoing emails (OTP, order confirmations, etc.). '
+                'For Gmail, set smtp_user to your Gmail address and smtp_password to a Gmail App Password '
+                '(not your regular password). Changes take effect immediately without redeploying.'
+            ),
+            'fields': (
+                'smtp_host', 'smtp_port',
+                'smtp_use_tls', 'smtp_use_ssl',
+                'smtp_user', 'smtp_password',
+                'from_email',
+            ),
+        }),
+        ('Razorpay Payment Gateway', {
+            'description': (
+                'Get your keys from dashboard.razorpay.com → Settings → API Keys. '
+                'Use rzp_test_... keys for testing, rzp_live_... for production. '
+                'Changes take effect immediately without redeploying.'
+            ),
+            'fields': ('razorpay_key_id', 'razorpay_key_secret'),
+        }),
+    )
+
     def has_add_permission(self, request):
         return not SiteSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(EmailOTP)
+class EmailOTPAdmin(admin.ModelAdmin):
+    list_display = ['email', 'otp', 'created_at', 'expires_at', 'is_used']
+    list_filter = ['is_used']
+    search_fields = ['email']
+    readonly_fields = ['email', 'otp', 'created_at', 'expires_at', 'is_used']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser

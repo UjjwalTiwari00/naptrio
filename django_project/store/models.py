@@ -136,6 +136,36 @@ class SiteSettings(models.Model):
         help_text="All new-order alerts go to this address."
     )
 
+    # SMTP configuration — managed from admin, no redeployment needed
+    smtp_host = models.CharField(
+        max_length=255, default='smtp.gmail.com',
+        help_text="SMTP server hostname, e.g. smtp.gmail.com"
+    )
+    smtp_port = models.PositiveIntegerField(
+        default=587,
+        help_text="SMTP port (587 for TLS, 465 for SSL, 25 for plain)"
+    )
+    smtp_use_tls = models.BooleanField(
+        default=True,
+        help_text="Use STARTTLS (port 587). Disable for SSL (port 465)."
+    )
+    smtp_use_ssl = models.BooleanField(
+        default=False,
+        help_text="Use SSL (port 465). Mutually exclusive with TLS."
+    )
+    smtp_user = models.CharField(
+        max_length=255, blank=True,
+        help_text="Email address used to authenticate with the SMTP server."
+    )
+    smtp_password = models.CharField(
+        max_length=255, blank=True,
+        help_text="App password / SMTP password. For Gmail use an App Password."
+    )
+    from_email = models.EmailField(
+        blank=True,
+        help_text="'From' address shown to recipients. Defaults to smtp_user if blank."
+    )
+
     class Meta:
         verbose_name = 'Site Settings'
         verbose_name_plural = 'Site Settings'
@@ -154,3 +184,37 @@ class SiteSettings(models.Model):
             defaults={'admin_notification_email': 'imujjwaltiwari@gmail.com'},
         )
         return obj
+
+    # Razorpay configuration — managed from admin, no redeployment needed
+    razorpay_key_id = models.CharField(
+        max_length=255, blank=True,
+        help_text="Razorpay Key ID — starts with rzp_test_ or rzp_live_"
+    )
+    razorpay_key_secret = models.CharField(
+        max_length=255, blank=True,
+        help_text="Razorpay Key Secret. Keep this confidential."
+    )
+
+    @property
+    def effective_from_email(self):
+        return self.from_email or self.smtp_user
+
+
+class EmailOTP(models.Model):
+    """Stores a pending email-verification OTP for new signups."""
+    email = models.EmailField()
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"OTP for {self.email}"
+
+    @property
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() > self.expires_at

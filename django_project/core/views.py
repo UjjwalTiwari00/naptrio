@@ -1,10 +1,15 @@
+import random
+import string
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
-from store.models import Category, Customer, Order
+from store.email_utils import send_otp_email
+from store.models import Category, Customer, EmailOTP, Order
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -21,7 +26,12 @@ def _ctx(request, **extra):
 
 # ── auth ──────────────────────────────────────────────────────────────────────
 
+def _generate_otp(length=6):
+    return ''.join(random.choices(string.digits, k=length))
+
+
 def signup(request):
+    """Step 1 — collect details, send OTP, store pending data in session."""
     if request.user.is_authenticated:
         return redirect('core:dashboard')
 
@@ -42,21 +52,118 @@ def signup(request):
         elif User.objects.filter(email=email).exists():
             messages.error(request, 'An account with this email already exists.')
         else:
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name,
-            )
-            if phone:
-                user.customer.phone = phone
-                user.customer.save()
-            login(request, user)
-            messages.success(request, f'Welcome to NAPTRIO, {first_name}!')
-            return redirect('core:dashboard')
+            otp = _generate_otp()
+            expires_at = timezone.now() + timezone.timedelta(minutes=10)
+
+            # Invalidate any previous unused OTPs for this email
+            EmailOTP.objects.filter(email=email, is_used=False).update(is_used=True)
+
+            EmailOTP.objects.create(email=email, otp=otp, expires_at=expires_at)
+
+            # Stash form data in session (never store plain password — store it
+            # temporarily so we can create the user after OTP passes)
+            request.session['pending_signup'] = {
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email,
+                'phone': phone,
+                'password': password,
+            }
+            request.session.modified = True
+
+            sent = send_otp_email(email, otp, first_name)
+            if sent:
+                messages.success(request, f'A 6-digit OTP has been sent to {email}. Please check your inbox.')
+            else:
+                messages.warning(request, 'Could not send OTP email (SMTP not configured). Contact support.')
+
+            return redirect('core:verify_otp')
 
     return render(request, 'accounts/signup.html', _ctx(request))
+
+
+def verify_otp(request):
+    """Step 2 — validate OTP, create account, log in."""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+
+    pending = request.session.get('pending_signup')
+    if not pending:
+        messages.error(request, 'Session expired. Please sign up again.')
+        return redirect('core:signup')
+
+    if request.method == 'POST':
+        entered = ''.join(filter(str.isdigit, request.POST.get('otp', '')))
+        email = pending['email']
+
+        otp_obj = (
+            EmailOTP.objects
+            .filter(email=email, is_used=False)
+            .order_by('-created_at')
+            .first()
+        )
+
+        if not otp_obj:
+            messages.error(request, 'No OTP found. Please sign up again.')
+            return redirect('core:signup')
+
+        if otp_obj.is_expired:
+            messages.error(request, 'OTP has expired. Please sign up again.')
+            otp_obj.is_used = True
+            otp_obj.save(update_fields=['is_used'])
+            request.session.pop('pending_signup', None)
+            return redirect('core:signup')
+
+        if otp_obj.otp != entered:
+            messages.error(request, 'Incorrect OTP. Please try again.')
+            return render(request, 'accounts/verify_otp.html', _ctx(request, email=email))
+
+        # OTP correct — create user
+        otp_obj.is_used = True
+        otp_obj.save(update_fields=['is_used'])
+
+        user = User.objects.create_user(
+            username=pending['email'],
+            email=pending['email'],
+            password=pending['password'],
+            first_name=pending['first_name'],
+            last_name=pending['last_name'],
+        )
+        if pending.get('phone'):
+            user.customer.phone = pending['phone']
+            user.customer.save()
+
+        request.session.pop('pending_signup', None)
+        login(request, user)
+        messages.success(request, f"Welcome to NAPTRIO, {pending['first_name']}!")
+        return redirect('core:dashboard')
+
+    email = pending.get('email', '')
+    return render(request, 'accounts/verify_otp.html', _ctx(request, email=email))
+
+
+def resend_otp(request):
+    """POST-only — regenerate and resend OTP for the pending signup."""
+    pending = request.session.get('pending_signup')
+    if not pending:
+        messages.error(request, 'Session expired. Please sign up again.')
+        return redirect('core:signup')
+
+    email = pending['email']
+    otp = _generate_otp()
+    expires_at = timezone.now() + timezone.timedelta(minutes=10)
+
+    EmailOTP.objects.filter(email=email, is_used=False).update(is_used=True)
+    EmailOTP.objects.create(email=email, otp=otp, expires_at=expires_at)
+    request.session.modified = True
+
+    sent = send_otp_email(email, otp, pending.get('first_name', ''))
+    if sent:
+        messages.success(request, f'A new OTP has been sent to {email}.')
+    else:
+        messages.warning(request, 'Could not send OTP email. Please contact support.')
+
+    return redirect('core:verify_otp')
 
 
 def signin(request):

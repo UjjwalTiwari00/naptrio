@@ -127,32 +127,47 @@ LOGGING = {
 }
 
 # --- Sessions ---------------------------------------------------------------
-# Signed-cookie sessions: no database needed, safe across multiple workers,
-# and survive server restarts. Required for hosted environments with ephemeral
-# filesystems (Heroku, Render, Railway, etc.).
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 2 weeks
+SESSION_COOKIE_SAMESITE = 'Lax'
 
-# --- Security (production) --------------------------------------------------
+# --- CSRF -------------------------------------------------------------------
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False  # store CSRF token in cookie, not session
+CSRF_COOKIE_AGE = 31449600  # 1 year — prevents cookie expiring mid-session
+
+# Build CSRF_TRUSTED_ORIGINS from SITE_URL env var (set this on MilesWeb).
+# In dev (no SITE_URL set) we fall back to localhost so forms work locally.
 _site_url = os.getenv("SITE_URL", "").strip().rstrip("/")
 _uses_https = _site_url.startswith("https://")
 
+if _site_url:
+    CSRF_TRUSTED_ORIGINS = [_site_url]
+else:
+    # Local development only
+    CSRF_TRUSTED_ORIGINS = [
+        'http://127.0.0.1:8000',
+        'http://localhost:8000',
+        'http://127.0.0.1',
+        'http://localhost',
+    ]
+
+# Production domain — always trusted regardless of SITE_URL
+CSRF_TRUSTED_ORIGINS += [
+    'https://snoozethreads.com',
+    'https://www.snoozethreads.com',
+]
+
+# --- Security (production) --------------------------------------------------
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
-    # Only lock cookies to HTTPS if the site is actually served over HTTPS.
-    # On HTTP hosting (MilesWeb without SSL), Secure-flagged cookies are never
-    # sent back by the browser, which causes the session (and cart) to reset
-    # on every page reload.
     SESSION_COOKIE_SECURE = _uses_https
     CSRF_COOKIE_SECURE = _uses_https
 
     if _uses_https:
         SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
         SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-
-    # Django 4+ requires CSRF_TRUSTED_ORIGINS for requests through a proxy.
-    if _site_url:
-        CSRF_TRUSTED_ORIGINS = [_site_url]

@@ -49,10 +49,11 @@ def _base_context(request, **extra):
 
 
 def _razorpay_client():
-    key_id = getattr(settings, 'RAZORPAY_KEY_ID', '') or ''
-    key_secret = getattr(settings, 'RAZORPAY_KEY_SECRET', '') or ''
+    cfg = SiteSettings.get()
+    key_id = cfg.razorpay_key_id.strip()
+    key_secret = cfg.razorpay_key_secret.strip()
     if not key_id or not key_secret:
-        raise ValueError("Razorpay keys are not configured in settings.")
+        raise ValueError("Razorpay keys are not configured in Site Settings.")
     return razorpay.Client(auth=(key_id, key_secret))
 
 
@@ -286,7 +287,7 @@ def checkout(request):
         cart_items=cart_items,
         cart_total=cart_total,
         prefill=prefill,
-        razorpay_key_id=getattr(settings, 'RAZORPAY_KEY_ID', ''),
+        razorpay_key_id=SiteSettings.get().razorpay_key_id.strip(),
     )
     return render(request, 'store/checkout.html', ctx)
 
@@ -345,9 +346,9 @@ def verify_payment(request):
 
     # Verify HMAC-SHA256 signature
     try:
-        key_secret = (getattr(settings, 'RAZORPAY_KEY_SECRET', '') or '').encode()
+        key_secret = SiteSettings.get().razorpay_key_secret.strip().encode()
         if not key_secret:
-            raise ValueError("RAZORPAY_KEY_SECRET is not configured.")
+            raise ValueError("RAZORPAY_KEY_SECRET is not configured in Site Settings.")
         expected = hmac.new(
             key_secret,
             f"{razorpay_order_id}|{razorpay_payment_id}".encode(),
