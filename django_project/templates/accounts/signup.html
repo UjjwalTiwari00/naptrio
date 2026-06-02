@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Create Account — NAPTRIO{% endblock %}
+{% block content %}
+
+<section class="min-h-screen bg-[#f3f4f6] flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-md">
+
+    {# Logo / header #}
+    <div class="text-center mb-8">
+      <h1 class="font-clash text-3xl font-semibold text-[#1a1a1a]">Create your account</h1>
+      <p class="text-gray-500 font-roboto mt-2 text-sm">Join NAPTRIO — India's premium audio brand</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm p-8">
+
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="mb-5 px-4 py-3 rounded-lg
+            {% if msg.tags == 'error' %}bg-red-50 border border-red-200 text-red-700
+            {% else %}bg-green-50 border border-green-200 text-green-700{% endif %}
+            text-sm font-roboto">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">First Name *</label>
+            <input type="text" name="first_name" required value="{{ request.POST.first_name }}"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                   placeholder="Rahul" />
+          </div>
+          <div>
+            <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Last Name</label>
+            <input type="text" name="last_name" value="{{ request.POST.last_name }}"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                   placeholder="Sharma" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Email address *</label>
+          <input type="email" name="email" required value="{{ request.POST.email }}"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="rahul@example.com" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Phone number</label>
+          <input type="tel" name="phone" value="{{ request.POST.phone }}"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="+91 98765 43210" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Password *</label>
+          <input type="password" name="password" required
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="Min. 8 characters" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Confirm Password *</label>
+          <input type="password" name="confirm_password" required
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="Repeat password" />
+        </div>
+
+        <button type="submit"
+                class="w-full bg-[#0c5faa] hover:bg-[#0a4f8f] text-white py-3.5 rounded-xl font-clash font-semibold transition-colors">
+          Create Account
+        </button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 font-roboto mt-6">
+        Already have an account?
+        <a href="{% url 'core:signin' %}" class="text-[#0c5faa] font-semibold hover:underline">Sign In</a>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Sign In — NAPTRIO{% endblock %}
+{% block content %}
+
+<section class="min-h-screen bg-[#f3f4f6] flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-md">
+
+    <div class="text-center mb-8">
+      <h1 class="font-clash text-3xl font-semibold text-[#1a1a1a]">Welcome back</h1>
+      <p class="text-gray-500 font-roboto mt-2 text-sm">Sign in to your NAPTRIO account</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm p-8">
+
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="mb-5 px-4 py-3 rounded-lg
+            {% if msg.tags == 'error' %}bg-red-50 border border-red-200 text-red-700
+            {% else %}bg-green-50 border border-green-200 text-green-700{% endif %}
+            text-sm font-roboto">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-sm font-clash font-semibold text-gray-700 mb-1.5">Email address</label>
+          <input type="email" name="email" required value="{{ request.POST.email }}"
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="rahul@example.com" autofocus />
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="text-sm font-clash font-semibold text-gray-700">Password</label>
+          </div>
+          <input type="password" name="password" required
+                 class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent transition"
+                 placeholder="Your password" />
+        </div>
+
+        <button type="submit"
+                class="w-full bg-[#0c5faa] hover:bg-[#0a4f8f] text-white py-3.5 rounded-xl font-clash font-semibold transition-colors">
+          Sign In
+        </button>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-gray-100 text-center">
+        <p class="text-sm text-gray-500 font-roboto">
+          New to NAPTRIO?
+          <a href="{% url 'core:signup' %}" class="text-[#0c5faa] font-semibold hover:underline">Create an account</a>
+        </p>
+      </div>
+    </div>
+
+    {# Guest checkout shortcut #}
+    <p class="text-center text-sm text-gray-400 font-roboto mt-4">
+      Or continue as
+      <a href="{% url 'store:cart' %}" class="text-gray-600 hover:text-[#0c5faa] font-semibold underline">Guest</a>
+    </p>
+
+  </div>
+</section>
+
+{% endblock %}

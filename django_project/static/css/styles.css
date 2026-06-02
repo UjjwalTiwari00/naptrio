@@ -1,0 +1,67 @@
+/* ============================================================
+   Naptrio – shared styles
+   These supplement Tailwind utility classes with brand-level
+   tokens, custom animations, and components that are easier to
+   express in pure CSS than as Tailwind utility chains.
+   ============================================================ */
+
+:root {
+  --font-clash:        'Clash Display', system-ui, sans-serif;
+  --font-roboto:       'Roboto', system-ui, sans-serif;
+  --brand-blue:        #0c5faa;
+  --brand-blue-hover:  #094a85;
+  --accent-blue:       #4a9eff;
+  --cta-green:         #7ed321;
+  --cta-green-hover:   #6bc218;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-roboto); color: #1a1a1a; background: #fff; }
+
+h1, h2, h3, h4, h5, .font-clash { font-family: var(--font-clash); }
+.font-roboto { font-family: var(--font-roboto); }
+
+/* Hide scrollbar on horizontal product rails */
+.scrollbar-hide              { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Hero slide cross-fade */
+.slide { transition: opacity 1000ms ease; }
+
+/* Product card hover lift + image zoom */
+.product-card       { transition: box-shadow 300ms ease, transform 300ms ease; }
+.product-card:hover { box-shadow: 0 10px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.05); }
+.product-img        { transition: transform 300ms ease; }
+.product-card:hover .product-img { transform: scale(1.05); }
+
+/* Category card image zoom */
+.cat-img                  { transition: transform 300ms ease; }
+.group:hover .cat-img     { transform: scale(1.10); }
+
+/* Scroll-reveal */
+.fade-in     { opacity: 0; transform: translateY(20px); transition: opacity 700ms ease, transform 700ms ease; }
+.fade-in.in  { opacity: 1; transform: translateY(0); }
+
+/* Active nav tab underline */
+.nav-tab            { position: relative; padding-bottom: 12px; }
+.nav-tab.active     { color: var(--accent-blue); }
+.nav-tab.active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px; background: var(--accent-blue);
+}
+
+/* Tiny toast for "Added to cart" etc. */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: #111; color: #fff;
+  padding: 12px 20px; border-radius: 8px;
+  font-family: var(--font-clash); font-size: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.30);
+  opacity: 0; transform: translateY(20px); pointer-events: none;
+  transition: opacity 250ms ease, transform 250ms ease;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+button         { transition: background-color 200ms ease, transform 100ms ease; }
+button:active  { transform: scale(.98); }

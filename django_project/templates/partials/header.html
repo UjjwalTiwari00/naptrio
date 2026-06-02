@@ -1,0 +1,127 @@
+{% load static %}
+<header class="sticky top-0 z-50 bg-black shadow-sm">
+  <div class="border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <button id="mobileMenuBtn" class="lg:hidden text-white" aria-label="Open menu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <a href="{% url 'store:home' %}" class="flex items-center">
+          <img src="{% static 'img/naptrio-logo.png' %}" alt="NAPTRIO" class="h-6 w-auto" style="filter: invert(1) brightness(2);" />
+        </a>
+        <div class="flex-1"></div>
+        <div class="flex items-center gap-5">
+          <a href="{% url 'store:about' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">About</a>
+          <a href="{% url 'store:contact' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Contact</a>
+          <a href="{% url 'store:corporate' %}" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Corporate</a>
+
+          {# ── Account ──────────────────────────────────────────── #}
+          {% if user.is_authenticated %}
+            <div class="relative group">
+              <button class="flex items-center gap-1.5 text-white hover:text-[#4a9eff] transition-colors">
+                <div class="w-7 h-7 rounded-full bg-[#0c5faa] flex items-center justify-center text-xs font-clash font-bold">
+                  {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                <span class="hidden md:block text-sm font-clash max-w-[90px] truncate">{{ user.first_name|default:user.email }}</span>
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 hidden md:block"></i>
+              </button>
+
+              {# Dropdown #}
+              <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100
+                          absolute right-0 top-full pt-2 w-52 transition-all duration-150 z-50">
+                <div class="bg-white rounded-xl shadow-xl border border-gray-100 py-1 overflow-hidden">
+                  <div class="px-4 py-3 border-b border-gray-100">
+                    <p class="font-clash font-semibold text-gray-900 text-sm truncate">{{ user.get_full_name|default:user.email }}</p>
+                    <p class="text-xs text-gray-400 font-roboto truncate">{{ user.email }}</p>
+                  </div>
+                  <a href="{% url 'core:dashboard' %}"
+                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-roboto">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-gray-400"></i>
+                    My Account
+                  </a>
+                  <a href="{% url 'core:orders' %}"
+                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-roboto">
+                    <i data-lucide="shopping-bag" class="w-4 h-4 text-gray-400"></i>
+                    My Orders
+                  </a>
+                  <a href="{% url 'core:edit_profile' %}"
+                     class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-roboto">
+                    <i data-lucide="user-cog" class="w-4 h-4 text-gray-400"></i>
+                    Profile Settings
+                  </a>
+                  <div class="border-t border-gray-100 mt-1">
+                    <a href="{% url 'core:signout' %}"
+                       class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors font-roboto">
+                      <i data-lucide="log-out" class="w-4 h-4"></i>
+                      Sign Out
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <a href="{% url 'core:signin' %}" class="flex items-center gap-1.5 text-white hover:text-[#4a9eff] transition-colors">
+              <i data-lucide="user" class="w-6 h-6"></i>
+              <span class="hidden md:block text-sm font-clash">Sign In</span>
+            </a>
+          {% endif %}
+
+          {# ── Cart ──────────────────────────────────────────────── #}
+          <a href="{% url 'store:cart' %}" id="cartBtn" class="relative text-white hover:text-[#0c5faa] transition-colors" aria-label="Cart">
+            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+            <span id="cartCount"
+                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 items-center justify-center font-clash {% if cart_count > 0 %}flex{% else %}hidden{% endif %}">
+              {{ cart_count }}
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bg-black text-white overflow-x-auto scrollbar-hide">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-12">
+        <div class="flex items-center gap-4 md:gap-8 whitespace-nowrap">
+          {% for c in nav_categories %}
+            <a href="{% url 'store:category' c.slug %}"
+               class="nav-tab text-sm font-clash {% if c.slug == active_slug %}active{% else %}text-white hover:text-[#4a9eff]{% endif %}">
+              {{ c.name }}
+            </a>
+          {% endfor %}
+        </div>
+        <form action="#" class="flex-shrink-0 w-80 ml-8 hidden md:block">
+          <div class="relative">
+            <input type="text" name="q" placeholder="Search products"
+                   class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent text-sm" />
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+          </div>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  {% include "partials/promo.html" %}
+
+  <div id="mobileMenu" class="lg:hidden hidden bg-black border-t border-gray-800">
+    <div class="px-4 py-4 space-y-3">
+      <div class="relative">
+        <input type="text" placeholder="Search products" class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg" />
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+      </div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'core:dashboard' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">My Account</a>
+        <a href="{% url 'core:orders' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">My Orders</a>
+        <a href="{% url 'core:signout' %}" class="block py-2 text-red-400 hover:text-red-300 font-clash">Sign Out</a>
+      {% else %}
+        <a href="{% url 'core:signin' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">Sign In</a>
+        <a href="{% url 'core:signup' %}" class="block py-2 text-white hover:text-[#0c5faa] font-clash">Create Account</a>
+      {% endif %}
+      <div class="border-t border-gray-800 pt-3">
+        <a href="{% url 'store:about' %}" class="block py-2 text-white hover:text-[#0c5faa]">About NAPTRIO</a>
+        <a href="{% url 'store:contact' %}" class="block py-2 text-white hover:text-[#0c5faa]">Contact Us</a>
+        <a href="{% url 'store:corporate' %}" class="block py-2 text-white hover:text-[#0c5faa]">Corporate Gifting</a>
+      </div>
+    </div>
+  </div>
+</header>

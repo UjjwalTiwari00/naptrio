@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}NAPTRIO — Sound that moves with you{% endblock %}
+
+{% block content %}
+
+{# ─────────────── Hero slideshow ─────────────── #}
+<section class="relative h-[600px] bg-black overflow-hidden">
+  <div id="slides" class="relative w-full h-full">
+    {% for src in slides %}
+      <div class="slide absolute inset-0" style="opacity: {% if forloop.first %}1{% else %}0{% endif %};">
+        <img src="{{ src }}" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="absolute inset-0 flex items-center pointer-events-none">
+    <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-xl pointer-events-auto">
+        <p class="text-[#4a9eff] font-clash text-sm tracking-[0.2em] uppercase mb-4">New Drop · Buds 3 Pro</p>
+        <h1 class="text-white font-clash text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] mb-6">
+          Sound that <br/>moves with you.
+        </h1>
+        <p class="text-white/80 text-base md:text-lg max-w-md mb-8 font-roboto">
+          Active noise cancellation, 30-hour playback, wireless charging. Crafted for the way you live.
+        </p>
+        <div class="flex gap-4">
+          <a href="{% url 'store:category' 'tws-earbuds' %}"><button class="bg-[#7ed321] hover:bg-[#6bc218] text-black px-8 py-3 rounded-lg font-clash">Shop Now</button></a>
+          <button class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-lg font-clash backdrop-blur border border-white/20">Learn more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="slideDots" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+    {% for src in slides %}
+      <button data-dot="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"
+              class="transition-all rounded-full {% if forloop.first %}w-8 h-2 bg-[#4a9eff]{% else %}w-2 h-2 bg-white/50 hover:bg-white/80{% endif %}"></button>
+    {% endfor %}
+  </div>
+</section>
+
+{# ─────────────── Latest Launch ─────────────── #}
+<section class="py-16 bg-white fade-in">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-12">
+      <div class="flex-1"></div>
+      <h2 class="text-center font-clash font-semibold text-5xl flex-1 whitespace-nowrap">Latest Launch</h2>
+      <div class="flex-1 flex justify-end gap-2">
+        <button class="rail-prev w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center" data-rail="latest" aria-label="Previous"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+        <button class="rail-next w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center" data-rail="latest" aria-label="Next"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+      </div>
+    </div>
+    <div id="rail-latest" class="overflow-x-auto scrollbar-hide scroll-smooth">
+      <div class="flex gap-6 pb-4">
+        {% for product in latest_products %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ─────────────── Bestsellers ─────────────── #}
+<section class="py-16 bg-[#fafafa] fade-in">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-12">
+      <div class="flex-1"></div>
+      <h2 class="text-center font-clash font-semibold text-5xl flex-1 whitespace-nowrap">Bestsellers</h2>
+      <div class="flex-1 flex justify-end gap-2">
+        <button class="rail-prev w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center" data-rail="best" aria-label="Previous"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+        <button class="rail-next w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center" data-rail="best" aria-label="Next"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+      </div>
+    </div>
+    <div id="rail-best" class="overflow-x-auto scrollbar-hide scroll-smooth">
+      <div class="flex gap-6 pb-4">
+        {% for product in bestsellers %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ─────────────── Categories ─────────────── #}
+<section class="py-20 bg-black text-white fade-in">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-center font-clash font-semibold text-5xl mb-12">Shop by Categories</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {% for c in categories_grid %}
+        <a href="{% url 'store:category' c.slug %}" class="group cursor-pointer block">
+          <div class="aspect-square bg-gray-800 rounded-lg overflow-hidden mb-4">
+            <img src="{{ c.image_url }}" alt="{{ c.name }}" class="cat-img w-full h-full object-cover" loading="lazy" />
+          </div>
+          <h3 class="text-center font-clash font-semibold">{{ c.name }}</h3>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ─────────────── Why Naptrio ─────────────── #}
+<section class="py-20 bg-white fade-in">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-center font-clash font-bold text-4xl md:text-5xl mb-16">Why NAPTRIO</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10">
+      {% for w in why_features %}
+        <div class="text-center">
+          <div class="mb-4 flex items-center justify-center">
+            <div class="w-16 h-16 rounded-full bg-[#0c5faa]/10 flex items-center justify-center text-[#0c5faa]">
+              <i data-lucide="{{ w.icon }}" class="w-7 h-7"></i>
+            </div>
+          </div>
+          <h4 class="font-clash font-semibold">{{ w.title }}</h4>
+          <p class="text-sm text-gray-600 mt-2 font-roboto">{{ w.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

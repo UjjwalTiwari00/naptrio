@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-[#f3f4f6] min-h-screen py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+      {# ── Sidebar ───────────────────────────────────────────── #}
+      <aside class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden sticky top-28">
+          {# Avatar + name #}
+          <div class="bg-gradient-to-br from-[#0c5faa] to-[#1a7fd4] px-6 py-8 text-white text-center">
+            <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-3 text-2xl font-clash font-bold">
+              {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+            </div>
+            <p class="font-clash font-semibold text-lg leading-tight">{{ customer.display_name }}</p>
+            <p class="text-blue-200 text-sm font-roboto truncate">{{ request.user.email }}</p>
+          </div>
+
+          {# Nav links #}
+          <nav class="py-2">
+            {% url 'core:dashboard' as url_dashboard %}
+            {% url 'core:orders' as url_orders %}
+            {% url 'core:edit_profile' as url_profile %}
+            {% url 'core:signout' as url_signout %}
+
+            <a href="{{ url_dashboard }}"
+               class="flex items-center gap-3 px-6 py-3 text-sm font-roboto hover:bg-gray-50 transition-colors {% if request.path == url_dashboard %}bg-blue-50 text-[#0c5faa] font-semibold border-l-4 border-[#0c5faa]{% else %}text-gray-700{% endif %}">
+              <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
+              My Account
+            </a>
+            <a href="{{ url_orders }}"
+               class="flex items-center gap-3 px-6 py-3 text-sm font-roboto hover:bg-gray-50 transition-colors {% if '/account/orders' in request.path %}bg-blue-50 text-[#0c5faa] font-semibold border-l-4 border-[#0c5faa]{% else %}text-gray-700{% endif %}">
+              <i data-lucide="shopping-bag" class="w-4 h-4 flex-shrink-0"></i>
+              My Orders
+            </a>
+            <a href="{{ url_profile }}"
+               class="flex items-center gap-3 px-6 py-3 text-sm font-roboto hover:bg-gray-50 transition-colors {% if request.path == url_profile %}bg-blue-50 text-[#0c5faa] font-semibold border-l-4 border-[#0c5faa]{% else %}text-gray-700{% endif %}">
+              <i data-lucide="user-cog" class="w-4 h-4 flex-shrink-0"></i>
+              Profile & Settings
+            </a>
+            <div class="border-t border-gray-100 mt-2 pt-2">
+              <a href="{{ url_signout }}"
+                 class="flex items-center gap-3 px-6 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors font-roboto">
+                <i data-lucide="log-out" class="w-4 h-4 flex-shrink-0"></i>
+                Sign Out
+              </a>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      {# ── Main content ──────────────────────────────────────── #}
+      <main class="lg:col-span-3 space-y-6">
+        {% block account_content %}{% endblock %}
+      </main>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+"""Static product catalog used by the storefront views.
+
+In production this would live in a Postgres table managed via Django admin.
+Kept as a Python list here so the site renders out of the box with no DB seed.
+"""
+
+PRODUCTS = [
+    {
+        "id": 1,
+        "name": "Buds 3 Pro",
+        "price": 999,
+        "original_price": 1499,
+        "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "tws-earbuds",
+        "rating": 4.4,
+        "reviews": 3277,
+        "feature": "Wireless | 40mm Sound Drivers",
+        "bestseller": True,
+    },
+    {
+        "id": 2,
+        "name": "AudioMax X1",
+        "price": 1299,
+        "original_price": 1999,
+        "image": "https://images.unsplash.com/photo-1713618651165-a3cf7f85506c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "headphones",
+        "rating": 4.6,
+        "reviews": 2156,
+        "feature": "50mm Neodymium Drivers",
+        "bestseller": True,
+    },
+    {
+        "id": 3,
+        "name": "Flex Sport Neckband",
+        "price": 799,
+        "original_price": 1299,
+        "image": "https://images.unsplash.com/photo-1632247541401-3d4a8d516595?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "neckbands",
+        "rating": 4.3,
+        "reviews": 1845,
+        "feature": "Magnetic Earbuds",
+        "bestseller": False,
+    },
+    {
+        "id": 4,
+        "name": "BoomBox Pro",
+        "price": 1599,
+        "original_price": 2499,
+        "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "speakers",
+        "rating": 4.7,
+        "reviews": 3521,
+        "feature": "360° Surround Sound",
+        "bestseller": True,
+    },
+    {
+        "id": 5,
+        "name": "Buds Elite",
+        "price": 1199,
+        "original_price": 1799,
+        "image": "https://images.unsplash.com/photo-1607087365600-e7bf50d0b226?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "tws-earbuds",
+        "rating": 4.5,
+        "reviews": 2893,
+        "feature": "Premium 10mm Drivers",
+        "bestseller": False,
+    },
+    {
+        "id": 6,
+        "name": "Studio Pro Headphones",
+        "price": 1899,
+        "original_price": 2999,
+        "image": "https://images.unsplash.com/photo-1505751171710-1f6d0ace5a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "headphones",
+        "rating": 4.8,
+        "reviews": 4127,
+        "feature": "Hi-Res Audio Certified",
+        "bestseller": True,
+    },
+    {
+        "id": 7,
+        "name": "Buds Mini",
+        "price": 699,
+        "original_price": 999,
+        "image": "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "tws-earbuds",
+        "rating": 4.2,
+        "reviews": 1567,
+        "feature": "Compact Design",
+        "bestseller": False,
+    },
+    {
+        "id": 8,
+        "name": "MiniBlast Speaker",
+        "price": 899,
+        "original_price": 1399,
+        "image": "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
+        "category": "speakers",
+        "rating": 4.4,
+        "reviews": 2234,
+        "feature": "Compact & Portable",
+        "bestseller": False,
+    },
+]
+
+CATEGORIES = [
+    {"slug": "tws-earbuds",  "name": "TWS Earbuds",
+     "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"},
+    {"slug": "headphones",   "name": "Headphones",
+     "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"},
+    {"slug": "neckbands",    "name": "Neckbands",
+     "image": "https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"},
+    {"slug": "speakers",     "name": "Bluetooth Speakers",
+     "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"},
+    {"slug": "accessories",  "name": "Accessories",
+     "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600"},
+]
+
+HERO_SLIDES = [
+    "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+    "https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+    "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+    "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+]
+
+WHY_FEATURES = [
+    {"icon": "music",        "title": "Premium Sound",   "desc": "Experience crystal clear audio quality"},
+    {"icon": "zap",          "title": "Fast Charging",   "desc": "Quick charge for all-day listening"},
+    {"icon": "droplets",     "title": "Water Resistant", "desc": "IPX5 rated for sweat and splash proof"},
+    {"icon": "shield-check", "title": "1 Year Warranty", "desc": "Protected with comprehensive warranty"},
+    {"icon": "truck",        "title": "Free Shipping",   "desc": "Free delivery on all orders"},
+]

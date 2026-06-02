@@ -1,0 +1,79 @@
+<footer class="bg-black text-white mt-20 font-roboto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div>
+        <h4 class="mb-4 font-clash">CONNECT WITH US</h4>
+        <div class="flex gap-3">
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="facebook"  class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="youtube"   class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="twitter"   class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="linkedin"  class="w-5 h-5"></i></a>
+        </div>
+        <div class="mt-4 text-sm text-gray-400">
+          <p>Email: info@naptrio.in</p>
+          <p>Phone: +91 9876543210</p>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">IN STORE</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">Shop</a></li>
+          <li><a href="#" class="hover:text-white">FAQs</a></li>
+          <li><a href="#" class="hover:text-white">Warranty Registration</a></li>
+          <li><a href="#" class="hover:text-white">Exclusive Offers</a></li>
+          <li><a href="#" class="hover:text-white">Track Your Order</a></li>
+          <li><a href="#" class="hover:text-white">Affiliate Programme</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">MANAGE</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">About Us</a></li>
+          <li><a href="#" class="hover:text-white">Contact Us</a></li>
+          <li><a href="#" class="hover:text-white">Blog</a></li>
+          <li><a href="#" class="hover:text-white">News</a></li>
+          <li><a href="#" class="hover:text-white">Careers</a></li>
+          <li><a href="#" class="hover:text-white">Suggestion</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">SUPPORT</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">After Sale Service</a></li>
+          <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-white">Shipping Policy</a></li>
+          <li><a href="#" class="hover:text-white">Warranty Registration</a></li>
+          <li><a href="#" class="hover:text-white">Corporate Enquiry</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">SIGN UP AND SAVE</h4>
+        <p class="text-sm text-gray-300 mb-4">Subscribe to get special offers, free giveaways and once-in-a-lifetime deals.</p>
+        <form id="subscribeForm" method="post" action="{% url 'store:subscribe' %}" class="space-y-2">
+          {% csrf_token %}
+          <input type="tel"   name="phone" placeholder="Enter Number"            class="w-full px-4 py-2 bg-white text-black rounded" />
+          <input type="email" name="email" placeholder="Enter your email address" class="w-full px-4 py-2 bg-white text-black rounded" required />
+          <button type="submit" class="w-full bg-[#0c5faa] hover:bg-blue-700 text-white py-2 rounded font-clash">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-gray-800">
+      <h4 class="text-center mb-4 font-clash">Also available on</h4>
+      <div class="flex justify-center gap-6">
+        <a href="https://amazon.in"   target="_blank" rel="noopener"><button class="bg-[#0c5faa] hover:bg-blue-700 text-white px-8 py-2 rounded font-clash">Amazon</button></a>
+        <a href="https://flipkart.com" target="_blank" rel="noopener"><button class="bg-[#0c5faa] hover:bg-blue-700 text-white px-8 py-2 rounded font-clash">Flipkart</button></a>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p>© 2026 Naptrio Audio India. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>

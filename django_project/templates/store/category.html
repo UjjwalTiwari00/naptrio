@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }} — NAPTRIO{% endblock %}
+{% block content %}
+<section class="bg-black text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="font-clash text-5xl font-semibold">{{ category.name }}</h1>
+    <p class="text-gray-400 mt-2 font-roboto">{{ products|length }} product{{ products|length|pluralize }}</p>
+  </div>
+</section>
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for product in products %}
+        {% include "partials/product_card.html" %}
+      {% empty %}
+        <p class="col-span-full text-center text-gray-500 py-12 font-roboto">No products yet in this category.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

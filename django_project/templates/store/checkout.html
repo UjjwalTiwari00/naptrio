@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% block title %}Checkout — NAPTRIO{% endblock %}
+{% block content %}
+
+<section class="py-16 bg-white min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="font-clash text-4xl font-semibold mb-10">Checkout</h1>
+
+    <div id="form-errors" class="hidden mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 font-roboto"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+      {# ── Shipping form ────────────────────────────────────────── #}
+      <div class="lg:col-span-2">
+        <form id="checkout-form" class="space-y-6" onsubmit="return false;">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <label class="block font-clash font-semibold mb-2">Full Name *</label>
+              <input type="text" id="name" name="name" required value="{{ prefill.name }}"
+                     class="w-full border border-gray-300 rounded-lg px-4 py-3 font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa]"
+                     placeholder="Rahul Sharma" />
+            </div>
+            <div>
+              <label class="block font-clash font-semibold mb-2">Email *</label>
+              <input type="email" id="email" name="email" required value="{{ prefill.email }}"
+                     class="w-full border border-gray-300 rounded-lg px-4 py-3 font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa]"
+                     placeholder="rahul@example.com" />
+            </div>
+          </div>
+          <div>
+            <label class="block font-clash font-semibold mb-2">Phone *</label>
+            <input type="tel" id="phone" name="phone" required value="{{ prefill.phone }}"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-3 font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa]"
+                   placeholder="+91 98765 43210" />
+          </div>
+          <div>
+            <label class="block font-clash font-semibold mb-2">Delivery Address *</label>
+            <textarea id="address" name="address" required rows="4"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-3 font-roboto focus:outline-none focus:ring-2 focus:ring-[#0c5faa]"
+                      placeholder="Flat / House No., Street, City, State, PIN">{{ prefill.address }}</textarea>
+          </div>
+
+          <div class="bg-[#fafafa] rounded-xl p-5 border border-gray-200">
+            <div class="flex items-center gap-3 mb-2">
+              <i data-lucide="truck" class="w-5 h-5 text-[#0c5faa]"></i>
+              <span class="font-clash font-semibold">Free Standard Delivery</span>
+            </div>
+            <p class="text-sm text-gray-500 font-roboto ml-8">Estimated delivery in 3–5 business days.</p>
+          </div>
+
+          <div class="bg-blue-50 rounded-xl p-5 border border-blue-200">
+            <div class="flex items-center gap-3">
+              <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
+              <span class="font-clash font-semibold text-blue-800">Secure Online Payment</span>
+            </div>
+            <p class="text-sm text-blue-700 font-roboto mt-1 ml-8">Pay securely via Razorpay — UPI, cards, netbanking & wallets accepted.</p>
+          </div>
+
+          <button type="button" id="pay-btn"
+                  class="w-full bg-[#7ed321] hover:bg-[#6bc218] text-black py-4 rounded-lg font-clash text-lg transition-colors flex items-center justify-center gap-2">
+            <i data-lucide="lock" class="w-5 h-5"></i>
+            Pay ₹{{ cart_total }} Securely
+          </button>
+        </form>
+      </div>
+
+      {# ── Order summary ────────────────────────────────────────── #}
+      <div class="lg:col-span-1">
+        <div class="bg-[#fafafa] rounded-xl p-6 sticky top-28">
+          <h2 class="font-clash font-semibold text-xl mb-6">Your Order</h2>
+          <div class="space-y-4 mb-6">
+            {% for item in cart_items %}
+            <div class="flex gap-3">
+              <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"
+                   class="w-14 h-14 object-cover rounded-lg bg-gray-100 flex-shrink-0" />
+              <div class="flex-1 min-w-0">
+                <p class="font-clash font-semibold text-sm truncate">{{ item.product.name }}</p>
+                <p class="text-gray-500 text-xs font-roboto">Qty: {{ item.qty }}</p>
+              </div>
+              <p class="font-clash font-semibold text-sm">₹{{ item.subtotal }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="border-t border-gray-200 pt-4 space-y-2 text-sm font-roboto mb-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal</span>
+              <span class="font-clash">₹{{ cart_total }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Shipping</span>
+              <span class="text-green-600 font-clash">FREE</span>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 pt-4">
+            <div class="flex justify-between font-clash font-semibold text-lg">
+              <span>Total</span>
+              <span class="text-[#0c5faa]">₹{{ cart_total }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{# Razorpay JS SDK #}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+const RAZORPAY_KEY = "{{ razorpay_key_id }}";
+const CREATE_PAYMENT_URL = "{% url 'store:create_payment' %}";
+const VERIFY_PAYMENT_URL = "{% url 'store:verify_payment' %}";
+const ORDER_CONFIRM_BASE  = "{% url 'store:order_confirm' order_id=0 %}".replace('/0/', '/');
+const CSRF_TOKEN = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+function showError(msg) {
+  const el = document.getElementById('form-errors');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function validateForm() {
+  const fields = ['name', 'email', 'phone', 'address'];
+  for (const f of fields) {
+    if (!document.getElementById(f).value.trim()) {
+      showError('Please fill in all required fields before proceeding to payment.');
+      return false;
+    }
+  }
+  return true;
+}
+
+document.getElementById('pay-btn').addEventListener('click', async () => {
+  if (!validateForm()) return;
+
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Preparing payment…';
+
+  // Step 1: create Razorpay order on server
+  let rzOrderId, amount;
+  try {
+    const res = await fetch(CREATE_PAYMENT_URL, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF_TOKEN },
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Could not create payment');
+    rzOrderId = data.razorpay_order_id;
+    amount    = data.amount;
+  } catch (e) {
+    showError(e.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="lock" class="w-5 h-5"></i> Pay ₹{{ cart_total }} Securely';
+    lucide.createIcons();
+    return;
+  }
+
+  // Step 2: open Razorpay popup
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: amount,
+    currency: 'INR',
+    name: 'Naptrio',
+    description: 'Order Payment',
+    order_id: rzOrderId,
+    prefill: {
+      name:    document.getElementById('name').value.trim(),
+      email:   document.getElementById('email').value.trim(),
+      contact: document.getElementById('phone').value.trim(),
+    },
+    theme: { color: '#0c5faa' },
+
+    handler: async function(response) {
+      // Step 3: verify payment on server
+      try {
+        const res = await fetch(VERIFY_PAYMENT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN,
+          },
+          body: JSON.stringify({
+            razorpay_order_id:   response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature:  response.razorpay_signature,
+            name:    document.getElementById('name').value.trim(),
+            email:   document.getElementById('email').value.trim(),
+            phone:   document.getElementById('phone').value.trim(),
+            address: document.getElementById('address').value.trim(),
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          window.location.href = ORDER_CONFIRM_BASE + data.order_id + '/confirm/';
+        } else {
+          showError(data.error || 'Payment verification failed. Contact support.');
+          btn.disabled = false;
+        }
+      } catch (e) {
+        showError('Something went wrong verifying your payment. Contact support.');
+        btn.disabled = false;
+      }
+    },
+
+    modal: {
+      ondismiss: function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="lock" class="w-5 h-5"></i> Pay ₹{{ cart_total }} Securely';
+        lucide.createIcons();
+      }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+});
+</script>
+
+{% endblock %}

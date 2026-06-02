@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//usr/local/bin/**)",
+      "Read(//usr/bin/**)",
+      "Bash(pyenv versions *)",
+      "Bash(python3 manage.py makemigrations store)",
+      "Bash(python3 manage.py migrate)",
+      "Bash(python3 manage.py seed_data)",
+      "Bash(python3 manage.py check)"
+    ]
+  }
+}

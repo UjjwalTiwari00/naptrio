@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NAPTRIO — Premium Audio India</title>
+<meta name="description" content="Naptrio Audio India — premium TWS earbuds, headphones, neckbands & Bluetooth speakers. Crafted for crystal-clear sound." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --font-clash: 'Clash Display', system-ui, sans-serif;
+    --font-roboto: 'Roboto', system-ui, sans-serif;
+    --brand-blue: #0c5faa;
+    --brand-blue-hover: #094a85;
+    --accent-blue: #4a9eff;
+    --cta-green: #7ed321;
+    --cta-green-hover: #6bc218;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-roboto); color: #1a1a1a; background: #fff; }
+  h1, h2, h3, h4, h5, .font-clash { font-family: var(--font-clash); }
+  .font-roboto { font-family: var(--font-roboto); }
+
+  /* hide scrollbar on horizontal scroll rails */
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  /* slide fade */
+  .slide { transition: opacity 1000ms ease; }
+
+  /* product card hover */
+  .product-card { transition: box-shadow 300ms ease, transform 300ms ease; }
+  .product-card:hover { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); }
+  .product-card:hover .product-img { transform: scale(1.05); }
+  .product-img { transition: transform 300ms ease; }
+
+  /* category hover */
+  .cat-img { transition: transform 300ms ease; }
+  .group:hover .cat-img { transform: scale(1.1); }
+
+  /* fade-in on scroll */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 700ms ease, transform 700ms ease; }
+  .fade-in.in { opacity: 1; transform: translateY(0); }
+
+  /* nav underline */
+  .nav-tab { position: relative; padding-bottom: 12px; }
+  .nav-tab.active { color: var(--accent-blue); }
+  .nav-tab.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--accent-blue);
+  }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; background: #111; color: #fff;
+    padding: 12px 20px; border-radius: 8px; font-family: var(--font-clash);
+    font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 250ms ease, transform 250ms ease;
+    pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* button press */
+  button { transition: background-color 200ms ease, transform 100ms ease; }
+  button:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="sticky top-0 z-50 bg-black shadow-sm" data-screen-label="Header">
+  <!-- Main row -->
+  <div class="border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <button id="mobileMenuBtn" class="lg:hidden text-white" aria-label="Open menu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <a href="#" class="flex items-center">
+          <img src="static/img/naptrio-logo.png" alt="NAPTRIO" class="h-6 w-auto invert brightness-0" style="filter: invert(1) brightness(2)" />
+        </a>
+        <div class="flex-1"></div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">About NAPTRIO</a>
+          <a href="#" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Contact Us</a>
+          <a href="#" class="hidden lg:block text-sm text-white hover:text-[#0c5faa] font-clash">Corporate Gifting</a>
+          <button class="text-white hover:text-[#0c5faa]" aria-label="Account">
+            <i data-lucide="user" class="w-6 h-6"></i>
+          </button>
+          <button id="cartBtn" class="relative text-white hover:text-[#0c5faa]" aria-label="Cart">
+            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+            <span id="cartCount" class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-clash">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category nav + search -->
+  <nav class="bg-black text-white overflow-x-auto scrollbar-hide">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-12">
+        <div class="flex items-center gap-4 md:gap-8 whitespace-nowrap">
+          <a href="#" class="nav-tab active text-sm font-clash">TWS Earbuds</a>
+          <a href="#" class="nav-tab text-sm font-clash text-white hover:text-[#4a9eff]">Headphones</a>
+          <a href="#" class="nav-tab text-sm font-clash text-white hover:text-[#4a9eff]">Neckbands</a>
+          <a href="#" class="nav-tab text-sm font-clash text-white hover:text-[#4a9eff]">Bluetooth Speakers</a>
+          <a href="#" class="nav-tab text-sm font-clash text-white hover:text-[#4a9eff]">Accessories</a>
+        </div>
+        <div class="flex-shrink-0 w-80 ml-8 hidden md:block">
+          <div class="relative">
+            <input type="text" placeholder="Search products" class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0c5faa] focus:border-transparent text-sm" />
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Promo banner -->
+  <div class="bg-[#0c5faa] text-white text-center py-2 px-4">
+    <p class="text-sm font-clash">Diwali Deals from Nov 5 – Nov 10 2026</p>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="lg:hidden hidden bg-black border-t border-gray-800">
+    <div class="px-4 py-4 space-y-3">
+      <div class="relative">
+        <input type="text" placeholder="Search products" class="w-full px-4 py-2 pl-10 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-lg" />
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+      </div>
+      <a href="#" class="block py-2 text-white hover:text-[#0c5faa]">About NAPTRIO</a>
+      <a href="#" class="block py-2 text-white hover:text-[#0c5faa]">Contact Us</a>
+      <a href="#" class="block py-2 text-white hover:text-[#0c5faa]">Corporate Gifting</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO SLIDESHOW ============================ -->
+<section class="relative h-[600px] bg-black overflow-hidden" data-screen-label="Hero Slideshow">
+  <div id="slides" class="relative w-full h-full">
+    <!-- slides injected -->
+  </div>
+  <!-- Headline overlay -->
+  <div class="absolute inset-0 flex items-center pointer-events-none">
+    <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-xl pointer-events-auto">
+        <p class="text-[#4a9eff] font-clash text-sm tracking-[0.2em] uppercase mb-4">New Drop · Buds 3 Pro</p>
+        <h1 class="text-white font-clash text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.05] mb-6">
+          Sound that <br/>moves with you.
+        </h1>
+        <p class="text-white/80 text-base md:text-lg max-w-md mb-8 font-roboto">
+          Active noise cancellation, 30-hour playback, wireless charging. Crafted for the way you live.
+        </p>
+        <div class="flex gap-4">
+          <button class="bg-[#7ed321] hover:bg-[#6bc218] text-black px-8 py-3 rounded-lg font-clash">Shop Now</button>
+          <button class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-lg font-clash backdrop-blur border border-white/20">Learn more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Indicators -->
+  <div id="slideDots" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10"></div>
+</section>
+
+<!-- ============================ LATEST LAUNCH ============================ -->
+<section class="py-16 bg-white fade-in" data-screen-label="Latest Launch">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-12">
+      <div class="flex-1"></div>
+      <h2 class="text-center font-clash font-semibold text-5xl flex-1 whitespace-nowrap">Latest Launch</h2>
+      <div class="flex-1 flex justify-end gap-2">
+        <button class="rail-prev w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center transition-colors" data-rail="latest" aria-label="Previous">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <button class="rail-next w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center transition-colors" data-rail="latest" aria-label="Next">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    <div id="rail-latest" class="overflow-x-auto scrollbar-hide scroll-smooth">
+      <div class="flex gap-6 pb-4" data-rail-track="latest"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BESTSELLERS ============================ -->
+<section class="py-16 bg-[#fafafa] fade-in" data-screen-label="Bestsellers">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-end justify-between mb-12">
+      <div class="flex-1"></div>
+      <h2 class="text-center font-clash font-semibold text-5xl flex-1 whitespace-nowrap">Bestsellers</h2>
+      <div class="flex-1 flex justify-end gap-2">
+        <button class="rail-prev w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center transition-colors" data-rail="best" aria-label="Previous">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <button class="rail-next w-10 h-10 rounded-full border border-gray-300 hover:border-black flex items-center justify-center transition-colors" data-rail="best" aria-label="Next">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    <div id="rail-best" class="overflow-x-auto scrollbar-hide scroll-smooth">
+      <div class="flex gap-6 pb-4" data-rail-track="best"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CATEGORIES ============================ -->
+<section class="py-20 bg-black text-white fade-in" data-screen-label="Shop by Categories">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-center font-clash font-semibold text-5xl mb-12">Shop by Categories</h2>
+    <div id="catGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+  </div>
+</section>
+
+<!-- ============================ WHY NAPTRIO ============================ -->
+<section class="py-20 bg-white fade-in" data-screen-label="Why NAPTRIO">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-center font-clash font-bold text-4xl md:text-5xl mb-16">Why NAPTRIO</h2>
+    <div id="whyGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10"></div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="bg-black text-white mt-20 font-roboto" data-screen-label="Footer">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <!-- Connect -->
+      <div>
+        <h4 class="mb-4 font-clash">CONNECT WITH US</h4>
+        <div class="flex gap-3">
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+          <a href="#" class="hover:text-[#0c5faa] transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+        </div>
+        <div class="mt-4 text-sm text-gray-400">
+          <p>Email: info@naptrio.in</p>
+          <p>Phone: +91 9876543210</p>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">IN STORE</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">Shop</a></li>
+          <li><a href="#" class="hover:text-white">FAQs</a></li>
+          <li><a href="#" class="hover:text-white">Warranty Registration</a></li>
+          <li><a href="#" class="hover:text-white">Exclusive Offers</a></li>
+          <li><a href="#" class="hover:text-white">Track Your Order</a></li>
+          <li><a href="#" class="hover:text-white">Affiliate Programme</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">MANAGE</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">About Us</a></li>
+          <li><a href="#" class="hover:text-white">Contact Us</a></li>
+          <li><a href="#" class="hover:text-white">Blog</a></li>
+          <li><a href="#" class="hover:text-white">News</a></li>
+          <li><a href="#" class="hover:text-white">Careers</a></li>
+          <li><a href="#" class="hover:text-white">Suggestion</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">SUPPORT</h4>
+        <ul class="space-y-2 text-sm text-gray-300">
+          <li><a href="#" class="hover:text-white">After Sale Service</a></li>
+          <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-white">Shipping Policy</a></li>
+          <li><a href="#" class="hover:text-white">Warranty Registration</a></li>
+          <li><a href="#" class="hover:text-white">Corporate Enquiry</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="mb-4 font-clash">SIGN UP AND SAVE</h4>
+        <p class="text-sm text-gray-300 mb-4">Subscribe to get special offers, free giveaways and once-in-a-lifetime deals.</p>
+        <form id="subscribeForm" class="space-y-2">
+          <input type="tel" placeholder="Enter Number" class="w-full px-4 py-2 bg-white text-black rounded" />
+          <input type="email" placeholder="Enter your email address" class="w-full px-4 py-2 bg-white text-black rounded" />
+          <button type="submit" class="w-full bg-[#0c5faa] hover:bg-blue-700 text-white py-2 rounded font-clash">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-gray-800">
+      <h4 class="text-center mb-4 font-clash">Also available on</h4>
+      <div class="flex justify-center gap-6">
+        <a href="#"><button class="bg-[#0c5faa] hover:bg-blue-700 text-white px-8 py-2 rounded font-clash">Amazon</button></a>
+        <a href="#"><button class="bg-[#0c5faa] hover:bg-blue-700 text-white px-8 py-2 rounded font-clash">Flipkart</button></a>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-gray-400">
+      <p>© 2026 Naptrio Audio India. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================== DATA =========================== */
+const PRODUCTS = [
+  { id:1, name:"Buds 3 Pro", price:999, originalPrice:1499, image:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.4, reviews:3277, feature:"Wireless | 40mm Sound Drivers", bestseller:true },
+  { id:2, name:"AudioMax X1", price:1299, originalPrice:1999, image:"https://images.unsplash.com/photo-1713618651165-a3cf7f85506c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.6, reviews:2156, feature:"50mm Neodymium Drivers", bestseller:true },
+  { id:3, name:"Flex Sport Neckband", price:799, originalPrice:1299, image:"https://images.unsplash.com/photo-1632247541401-3d4a8d516595?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.3, reviews:1845, feature:"Magnetic Earbuds", bestseller:false },
+  { id:4, name:"BoomBox Pro", price:1599, originalPrice:2499, image:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.7, reviews:3521, feature:"360° Surround Sound", bestseller:true },
+  { id:5, name:"Buds Elite", price:1199, originalPrice:1799, image:"https://images.unsplash.com/photo-1607087365600-e7bf50d0b226?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.5, reviews:2893, feature:"Premium 10mm Drivers", bestseller:false },
+  { id:6, name:"Studio Pro Headphones", price:1899, originalPrice:2999, image:"https://images.unsplash.com/photo-1505751171710-1f6d0ace5a85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.8, reviews:4127, feature:"Hi-Res Audio Certified", bestseller:true },
+  { id:7, name:"Buds Mini", price:699, originalPrice:999, image:"https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.2, reviews:1567, feature:"Compact Design", bestseller:false },
+  { id:8, name:"MiniBlast Speaker", price:899, originalPrice:1399, image:"https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600", rating:4.4, reviews:2234, feature:"Compact & Portable", bestseller:false }
+];
+
+const CATEGORIES = [
+  { name:"TWS Earbuds",       img:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" },
+  { name:"Headphones",        img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" },
+  { name:"Neckbands",         img:"https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" },
+  { name:"Bluetooth Speakers",img:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" },
+  { name:"Accessories",       img:"https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" }
+];
+
+const SLIDES = [
+  "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+  "https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+  "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600",
+  "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1600"
+];
+
+const WHY = [
+  { icon:"music",      title:"Premium Sound",   desc:"Experience crystal clear audio quality" },
+  { icon:"zap",        title:"Fast Charging",   desc:"Quick charge for all-day listening" },
+  { icon:"droplets",   title:"Water Resistant", desc:"IPX5 rated for sweat and splash proof" },
+  { icon:"shield-check",title:"1 Year Warranty", desc:"Protected with comprehensive warranty" },
+  { icon:"truck",      title:"Free Shipping",   desc:"Free delivery on all orders" }
+];
+
+/* =========================== STATE =========================== */
+let cartCount = 0;
+const cartEl = document.getElementById("cartCount");
+function bumpCart() {
+  cartCount++;
+  cartEl.textContent = cartCount;
+  cartEl.classList.remove("hidden");
+  cartEl.classList.add("flex");
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* =========================== RENDER =========================== */
+function star(filled) {
+  return `<svg viewBox="0 0 24 24" class="w-3.5 h-3.5 ${filled ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-300 text-gray-300'}" stroke="currentColor" stroke-width="1.5"><path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>`;
+}
+
+function productCard(p) {
+  const stars = Array.from({length:5}, (_,i) => star(i < Math.floor(p.rating))).join("");
+  const save = p.originalPrice - p.price;
+  return `
+    <article class="flex-shrink-0 w-72 sm:w-80 product-card bg-white rounded-lg overflow-hidden cursor-pointer">
+      <div class="relative aspect-square bg-gray-100 overflow-hidden">
+        ${p.bestseller ? `<div class="absolute top-3 left-3 z-10"><span class="bg-[#0c5faa] text-white px-3 py-1 text-xs rounded font-clash">Bestseller</span></div>` : ""}
+        <img src="${p.image}" alt="${p.name}" class="product-img w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="p-4">
+        <h3 class="mb-2 font-clash font-semibold">${p.name}</h3>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-2xl text-[#0c5faa] font-clash font-semibold">₹${p.price}</span>
+          <span class="text-gray-400 line-through text-sm font-clash">₹${p.originalPrice}</span>
+          <span class="text-green-600 text-sm font-clash">Save ₹${save}</span>
+        </div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="flex items-center">${stars}</div>
+          <span class="text-sm text-gray-600 font-clash">${p.rating} (${p.reviews.toLocaleString()})</span>
+        </div>
+        <p class="text-sm text-gray-600 mb-4 font-roboto">${p.feature}</p>
+        <button data-add="${p.id}" class="w-full bg-[#7ed321] hover:bg-[#6bc218] text-black py-3 rounded-lg font-clash">Add to Cart</button>
+      </div>
+    </article>`;
+}
+
+function renderRails() {
+  const latest = PRODUCTS.slice(0, 8);
+  const best = PRODUCTS.filter(p => p.bestseller);
+  document.querySelector('[data-rail-track="latest"]').innerHTML = latest.map(productCard).join("");
+  document.querySelector('[data-rail-track="best"]').innerHTML = best.map(productCard).join("");
+}
+
+function renderCategories() {
+  document.getElementById("catGrid").innerHTML = CATEGORIES.map(c => `
+    <a href="#" class="group cursor-pointer block">
+      <div class="aspect-square bg-gray-800 rounded-lg overflow-hidden mb-4">
+        <img src="${c.img}" alt="${c.name}" class="cat-img w-full h-full object-cover" loading="lazy" />
+      </div>
+      <h3 class="text-center font-clash font-semibold">${c.name}</h3>
+    </a>`).join("");
+}
+
+function renderWhy() {
+  document.getElementById("whyGrid").innerHTML = WHY.map(w => `
+    <div class="text-center">
+      <div class="mb-4 flex items-center justify-center">
+        <div class="w-16 h-16 rounded-full bg-[#0c5faa]/10 flex items-center justify-center text-[#0c5faa]">
+          <i data-lucide="${w.icon}" class="w-7 h-7"></i>
+        </div>
+      </div>
+      <h4 class="font-clash font-semibold">${w.title}</h4>
+      <p class="text-sm text-gray-600 mt-2 font-roboto">${w.desc}</p>
+    </div>`).join("");
+}
+
+function renderSlides() {
+  const root = document.getElementById("slides");
+  root.innerHTML = SLIDES.map((src, i) => `
+    <div class="slide absolute inset-0" style="opacity:${i === 0 ? 1 : 0}">
+      <img src="${src}" alt="" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+    </div>`).join("");
+  document.getElementById("slideDots").innerHTML = SLIDES.map((_, i) => `
+    <button data-dot="${i}" aria-label="Slide ${i+1}" class="transition-all rounded-full ${i === 0 ? 'w-8 h-2 bg-[#4a9eff]' : 'w-2 h-2 bg-white/50 hover:bg-white/80'}"></button>`).join("");
+}
+
+let currentSlide = 0;
+function goToSlide(i) {
+  currentSlide = (i + SLIDES.length) % SLIDES.length;
+  document.querySelectorAll(".slide").forEach((el, idx) => el.style.opacity = idx === currentSlide ? 1 : 0);
+  document.querySelectorAll("[data-dot]").forEach((el, idx) => {
+    el.className = `transition-all rounded-full ${idx === currentSlide ? 'w-8 h-2 bg-[#4a9eff]' : 'w-2 h-2 bg-white/50 hover:bg-white/80'}`;
+  });
+}
+
+/* =========================== INIT =========================== */
+document.addEventListener("DOMContentLoaded", () => {
+  renderSlides();
+  renderRails();
+  renderCategories();
+  renderWhy();
+  if (window.lucide) lucide.createIcons();
+
+  // slideshow auto
+  setInterval(() => goToSlide(currentSlide + 1), 4500);
+
+  // dots
+  document.getElementById("slideDots").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-dot]");
+    if (b) goToSlide(parseInt(b.dataset.dot, 10));
+  });
+
+  // add to cart (delegated)
+  document.addEventListener("click", (e) => {
+    const addBtn = e.target.closest("[data-add]");
+    if (addBtn) {
+      const p = PRODUCTS.find(x => x.id === parseInt(addBtn.dataset.add, 10));
+      bumpCart();
+      toast(`${p.name} added to cart!`);
+    }
+  });
+
+  // rail nav
+  document.querySelectorAll(".rail-prev, .rail-next").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const rail = document.getElementById("rail-" + btn.dataset.rail);
+      const delta = btn.classList.contains("rail-next") ? 1 : -1;
+      rail.scrollBy({ left: delta * 340, behavior: "smooth" });
+    });
+  });
+
+  // mobile menu
+  const menu = document.getElementById("mobileMenu");
+  document.getElementById("mobileMenuBtn").addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+
+  // cart button feedback
+  document.getElementById("cartBtn").addEventListener("click", () => {
+    toast(cartCount ? `You have ${cartCount} item${cartCount > 1 ? "s" : ""} in your cart` : "Your cart is empty");
+  });
+
+  // subscribe
+  document.getElementById("subscribeForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    toast("Subscribed — welcome to the Naptrio family!");
+    e.target.reset();
+  });
+
+  // fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) en.target.classList.add("in"); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
+});
+</script>
+</body>
+</html>

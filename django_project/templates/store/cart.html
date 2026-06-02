@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Cart — NAPTRIO{% endblock %}
+{% block content %}
+
+<section class="py-16 bg-white min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="font-clash text-4xl font-semibold mb-10">Your Cart</h1>
+
+    {% if cart_items %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+      {# ── Item list ─────────────────────────────────────────────── #}
+      <div class="lg:col-span-2 space-y-4" id="cartItemList">
+        {% for item in cart_items %}
+        <div class="cart-row flex gap-4 p-4 border border-gray-200 rounded-xl" data-pid="{{ item.product.id }}">
+          <a href="{% url 'store:product_detail' item.product.id %}" class="flex-shrink-0">
+            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}"
+                 class="w-24 h-24 object-cover rounded-lg bg-gray-100" />
+          </a>
+          <div class="flex-1 min-w-0">
+            <a href="{% url 'store:product_detail' item.product.id %}"
+               class="font-clash font-semibold text-lg hover:text-[#0c5faa]">{{ item.product.name }}</a>
+            <p class="text-sm text-gray-500 font-roboto mt-1">{{ item.product.feature }}</p>
+            <p class="text-[#0c5faa] font-clash font-semibold mt-1">₹{{ item.price }}</p>
+          </div>
+          <div class="flex flex-col items-end justify-between">
+            {# Qty stepper #}
+            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+              <button class="qty-dec px-3 py-2 hover:bg-gray-100 font-clash text-lg leading-none"
+                      data-pid="{{ item.product.id }}">−</button>
+              <span class="qty-val px-3 py-2 font-clash min-w-[2rem] text-center">{{ item.qty }}</span>
+              <button class="qty-inc px-3 py-2 hover:bg-gray-100 font-clash text-lg leading-none"
+                      data-pid="{{ item.product.id }}">+</button>
+            </div>
+            {# Subtotal #}
+            <p class="font-clash font-semibold text-lg row-subtotal">₹{{ item.subtotal }}</p>
+            {# Remove #}
+            <button class="btn-remove text-red-400 hover:text-red-600 text-sm font-roboto flex items-center gap-1"
+                    data-pid="{{ item.product.id }}">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> Remove
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {# ── Order summary ─────────────────────────────────────────── #}
+      <div class="lg:col-span-1">
+        <div class="bg-[#fafafa] rounded-xl p-6 sticky top-28">
+          <h2 class="font-clash font-semibold text-xl mb-6">Order Summary</h2>
+          <div class="space-y-3 text-sm font-roboto mb-6">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal</span>
+              <span id="summarySubtotal" class="font-clash font-semibold">₹{{ cart_total }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Shipping</span>
+              <span class="text-green-600 font-clash">FREE</span>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 pt-4 mb-6">
+            <div class="flex justify-between font-clash font-semibold text-lg">
+              <span>Total</span>
+              <span id="summaryTotal" class="text-[#0c5faa]">₹{{ cart_total }}</span>
+            </div>
+          </div>
+          <a href="{% url 'store:checkout' %}"
+             class="block w-full bg-[#7ed321] hover:bg-[#6bc218] text-black text-center py-4 rounded-lg font-clash text-lg transition-colors">
+            Proceed to Checkout
+          </a>
+          <a href="{% url 'store:home' %}"
+             class="block w-full text-center mt-3 text-gray-500 hover:text-black font-roboto text-sm">
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    {% else %}
+    {# ── Empty cart ────────────────────────────────────────────────── #}
+    <div class="text-center py-24">
+      <div class="w-24 h-24 mx-auto mb-6 text-gray-300">
+        <i data-lucide="shopping-cart" class="w-full h-full"></i>
+      </div>
+      <h2 class="font-clash text-2xl font-semibold mb-3">Your cart is empty</h2>
+      <p class="text-gray-500 font-roboto mb-8">Looks like you haven't added anything yet.</p>
+      <a href="{% url 'store:home' %}"
+         class="inline-block bg-[#0c5faa] hover:bg-[#0a4f8f] text-white px-10 py-4 rounded-lg font-clash transition-colors">
+        Start Shopping
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  "use strict";
+
+  function getCookie(name) {
+    const m = document.cookie.match(new RegExp("(^|; )" + name + "=([^;]*)"));
+    return m ? decodeURIComponent(m[2]) : "";
+  }
+
+  async function postCart(url, data) {
+    const fd = new FormData();
+    for (const [k, v] of Object.entries(data)) fd.append(k, v);
+    const res = await fetch(url, {
+      method: "POST",
+      body: fd,
+      headers: { "X-CSRFToken": getCookie("csrftoken") },
+    });
+    return res.json();
+  }
+
+  function setCartBadge(count) {
+    const el = document.getElementById("cartCount");
+    if (!el) return;
+    el.textContent = count;
+    el.classList.toggle("hidden", count <= 0);
+    el.classList.toggle("flex", count > 0);
+  }
+
+  function updateSummary(total) {
+    const fmt = "₹" + parseFloat(total).toLocaleString("en-IN");
+    document.getElementById("summarySubtotal").textContent = fmt;
+    document.getElementById("summaryTotal").textContent = fmt;
+  }
+
+  document.addEventListener("click", async (e) => {
+    // Remove
+    const removeBtn = e.target.closest(".btn-remove");
+    if (removeBtn) {
+      const pid = removeBtn.dataset.pid;
+      const json = await postCart("{% url 'store:cart_remove' %}", { product_id: pid });
+      if (json.ok) {
+        document.querySelector(`.cart-row[data-pid="${pid}"]`).remove();
+        setCartBadge(json.count);
+        updateSummary(json.total);
+        if (json.count === 0) location.reload();
+      }
+      return;
+    }
+
+    // Qty dec
+    const decBtn = e.target.closest(".qty-dec");
+    if (decBtn) {
+      const pid = decBtn.dataset.pid;
+      const row = document.querySelector(`.cart-row[data-pid="${pid}"]`);
+      const valEl = row.querySelector(".qty-val");
+      const newQty = Math.max(1, parseInt(valEl.textContent) - 1);
+      const json = await postCart("{% url 'store:cart_update' %}", { product_id: pid, qty: newQty });
+      if (json.ok) {
+        valEl.textContent = newQty;
+        if (json.item_subtotal) row.querySelector(".row-subtotal").textContent = "₹" + parseFloat(json.item_subtotal).toLocaleString("en-IN");
+        updateSummary(json.total);
+        setCartBadge(json.count);
+      }
+      return;
+    }
+
+    // Qty inc
+    const incBtn = e.target.closest(".qty-inc");
+    if (incBtn) {
+      const pid = incBtn.dataset.pid;
+      const row = document.querySelector(`.cart-row[data-pid="${pid}"]`);
+      const valEl = row.querySelector(".qty-val");
+      const newQty = parseInt(valEl.textContent) + 1;
+      const json = await postCart("{% url 'store:cart_update' %}", { product_id: pid, qty: newQty });
+      if (json.ok) {
+        valEl.textContent = newQty;
+        if (json.item_subtotal) row.querySelector(".row-subtotal").textContent = "₹" + parseFloat(json.item_subtotal).toLocaleString("en-IN");
+        updateSummary(json.total);
+        setCartBadge(json.count);
+      }
+      return;
+    }
+  });
+})();
+</script>
+{% endblock %}
